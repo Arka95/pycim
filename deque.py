@@ -1,5 +1,8 @@
-# Node of a doubly linked list
-# Note: this is not thread safe
+"""
+This was created due to current limitations of python collections.deque suffering
+a node removal time complexity of O(1). moreover unnecessary functions are removed as well
+Note: this is not thread safe"""
+
 class Node:
     def __init__(self, data=None, next=None, prev=None):
         self.next = next
@@ -9,8 +12,9 @@ class Node:
 
 class Deque:
     # TODO: add capacity
-    def __init__(self, list=None):
+    def __init__(self, list=None, capacity=None):
         self.__len = 0
+        self.__capacity = capacity
         self.__front = self.__back = None
         if list:
             self.append_from_list(list)
@@ -43,14 +47,15 @@ class Deque:
         """
         node: pointer to the node you want to delete (*Node)
         """
-        if node.prev == None:
-        # address of node is front of list
+        if not node:
+            return
+
+        if node.prev == None: # address of node is front of list
             self.__front = node.next
             node.next.prev = None
 
-        if node.next == None:
-        # address of node is back of list
-            if node.prev == None:
+        if node.next == None: # address of node is back of list
+            if node.prev == None: # it was the only one node of the queue
                 self.__back = self.__front
             else:
                 self.__back = node.prev
