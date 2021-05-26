@@ -11,6 +11,8 @@ class IndexedObject(object):
         self.val = val
         self.index = pointer
 
+    def set_index(self, pointer):
+        self.index = pointer
 
 class BaseBehaviour(object):
     """Defines default behaviour if no updation policies are used"""
@@ -31,7 +33,8 @@ class BaseBehaviour(object):
     def clear(self):
         self.cache.clear()
 
-class LRU(BaseBehaviour):
+
+class QueuedBehaviour(BaseBehaviour):
 
     def __init__(self, limit_recs):
         super().__init__(limit_recs)
@@ -43,6 +46,12 @@ class LRU(BaseBehaviour):
             return
         self.queue.remove(node.index)
         del self.cache[key]
+
+    def clear(self):
+        self.queue.remove_all()
+        self.cache.clear()
+
+class LRU(QueuedBehaviour):
 
     def update(self, key, value):
         """ writes to cache and updates the LRU queue"""
@@ -59,6 +68,7 @@ class LRU(BaseBehaviour):
 
         node = self.cache.get(key)
         if node:
-            self.queue.move_to_back(node.index)
+            new_index = self.queue.move_to_back(node.index)
+            self.cache[key].set_index(new_index)
             return node.val
         return None

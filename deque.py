@@ -11,7 +11,7 @@ class Node:
 
 
 class Deque:
-    # TODO: make this is a cyclic deque
+
     def __init__(self, list=None, capacity=None):
         self.__len = 0
         self.__capacity = capacity
@@ -86,6 +86,7 @@ class Deque:
         return data
 
     def move_to_back(self, node):  # O(1)
+        # Not a cache safe method. avoid usage
         data = node.data
         self.remove(node)
         return self.append(data)
@@ -110,3 +111,8 @@ class Deque:
 
     def is_full(self):
         return self.size() ==self.__capacity
+
+    def remove_all(self):
+        # TODO: check if garbage collection is applicable
+        self.__len = 0
+        self.__front = self.__back = None
