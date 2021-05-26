@@ -14,6 +14,7 @@ class IndexedObject(object):
     def set_index(self, pointer):
         self.index = pointer
 
+
 class BaseBehaviour(object):
     """Defines default behaviour if no updation policies are used"""
 

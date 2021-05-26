@@ -1,18 +1,5 @@
 from evictions import *
-
-class Singleton(type):
-    # TODO: move this to a separate file
-    _instances = {}
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
-
-class Policy:
-    # TODO: write_back implementation
-    WRITE_THROUGH = "write_through"
-    WRITE_BACK = "write_back"
-
+from lib import *
 
 class FallBack(metaclass=Singleton):
 
