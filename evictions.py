@@ -1,9 +1,9 @@
-from collections import deque
+from deque import Deque
 
 class IndexedObject(object):
     """ value Object with index field, to be used with eviction classes for index lookup"""
 
-    def __init__(self, val = None, *pointer):
+    def __init__(self, val, pointer):
         """
         val: actual value of the cache object/dict
         index = pointer to the indexed field/queue object for that particular key
@@ -28,29 +28,37 @@ class BaseBehaviour(object):
             return value
         return None
 
+    def clear(self):
+        self.cache.clear()
 
 class LRU(BaseBehaviour):
 
     def __init__(self, limit_recs):
         super().__init__(limit_recs)
-        self.queue = deque([], limit_recs)
+        self.queue = Deque(capacity=limit_recs)
+
+    def remove(self, key):
+        node = self.cache.get(key)
+        if not node:
+            return
+        self.queue.remove(node.index)
+        del self.cache[key]
 
     def update(self, key, value):
         """ writes to cache and updates the LRU queue"""
-        if len(self.queue) == self.limit_records:
-            self.queue.popleft()
+        if self.queue.size() == self.limit_records and self.cache.get(key) is None:
+            self.queue.pop_left()
 
-        self.queue.remove(key)
-        self.queue.append(key)
-        self.cache.update({key: IndexedObject(value, key)})
+        self.remove(key)
+        index = self.queue.append(key)
+        self.cache.update({key: IndexedObject(value, index)})
         return value
 
     def get(self, key):
         """ updates the LRU queue for values that hit. else LRU is not updated"""
 
-        value = self.cache.get(key)
-        if value:
-            if len(self.queue) == self.limit_records:
-                self.queue.popleft()
-            self.queue.append(key)
-        return value
+        node = self.cache.get(key)
+        if node:
+            self.queue.move_to_back(node.index)
+            return node.val
+        return None

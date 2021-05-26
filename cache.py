@@ -78,7 +78,7 @@ class Cim(metaclass=Singleton):
 
 
     def clear(self):
-        self.cache_type.cache.clear()
+        self.cache_type.clear()
 
 
     def set_fallback(self, fallback):

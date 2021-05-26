@@ -1,7 +1,7 @@
 """
 This was created due to current limitations of python collections.deque suffering
 a node removal time complexity of O(N). moreover unnecessary functions are removed as well
-Note: this is not thread safe"""
+Note: this is not thread safe. Also it does not throw excpetions for empty queue"""
 
 class Node:
     def __init__(self, data=None, next=None, prev=None):
@@ -11,7 +11,7 @@ class Node:
 
 
 class Deque:
-    # TODO: add capacity
+    # TODO: make this is a cyclic deque
     def __init__(self, list=None, capacity=None):
         self.__len = 0
         self.__capacity = capacity
@@ -33,6 +33,9 @@ class Deque:
     def append(self, data):  # O(1)
         node = Node(data)
 
+        if self.is_full():  # ensures old item popped before new item is inserted
+            self.pop_left()
+
         if self.__front == None and self.__back == None:
             self.__front = node
             self.__back = self.__front
@@ -50,40 +53,36 @@ class Deque:
         if not node:
             return
 
-        if node.prev == None: # address of node is front of list
+        elif node.next==None and node.prev==None: # it was the only one node of the queue
+            self.__back = self.__front = None
+
+        elif node.prev == None:  # address of node is front of list
             self.__front = node.next
             node.next.prev = None
 
-        if node.next == None: # address of node is back of list
-            if node.prev == None: # it was the only one node of the queue
-                self.__back = self.__front
-            else:
-                self.__back = node.prev
+        elif node.next == None:  # address of node is back of list
+            self.__back = node.prev
+            node.prev.next = None
 
-        # any other case
-        node.prev.next = node.next
-        if node.next:
-            node.next.prev = node.prev
+        else:  # any other case
+            node.prev.next = node.next
+            if node.next:
+                node.next.prev = node.prev
 
         node = None
         self.__len = self.__len -1 if self.__len >0 else 0
         return self.__back
 
+    def pop_left(self):  # O(1)
+        node = self.__front
+        data = node.data if node else None
+        self.remove(node)
+        return data
+
     def pop(self):  # O(1)
-        if self.__back==None: # no node
-            return None
-
-        data = self.__back.data
-
-        if not(self.__front ==  self.__back): #not single node
-            ptr = self.__back
-            self.__back = self.__back.prev
-            self.__back.next = ptr = None
-
-        else: #single node
-            self.__back = self.__front =None
-
-        self.__len = self.__len -1 if self.__len >0 else 0
+        node = self.__back
+        data = node.data if node else None
+        self.remove(node)
         return data
 
     def move_to_back(self, node):  # O(1)
@@ -105,3 +104,9 @@ class Deque:
 
     def __str__(self):  # O(n)
         return str(self.to_list())
+
+    def is_empty(self):
+        return self.__front == self.__back == None
+
+    def is_full(self):
+        return self.size() ==self.__capacity
