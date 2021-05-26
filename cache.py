@@ -1,3 +1,5 @@
+from evictions import *
+
 class Singleton(type):
     # TODO: move this to a separate file
     _instances = {}
@@ -6,30 +8,10 @@ class Singleton(type):
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
 
-from collections import deque
-
-
 class Policy:
     # TODO: write_back implementation
     WRITE_THROUGH = "write_through"
     WRITE_BACK = "write_back"
-
-
-class BaseBehaviour(object):
-    """Defines default behaviour if no updation policies are used"""
-
-    def __init__(self, limit_recs):
-        self.cache = {}
-        self.limit_records = limit_recs
-
-    def get(self, key):
-        return self.cache.get(key)
-
-    def update(self, key, value):
-        if len(self.cache) != self.limit_records:
-            self.cache.update({key: value})
-            return value
-        return None
 
 
 class FallBack(metaclass=Singleton):
@@ -38,34 +20,6 @@ class FallBack(metaclass=Singleton):
         return default
 
     def update(self, key, value):
-        return value
-
-
-class LRU(BaseBehaviour):
-
-    def __init__(self, limit_recs):
-        super().__init__(limit_recs)
-        self.queue = deque([], limit_recs)
-
-
-    def update(self, key, value):
-        """ writes to cache and updates the LRU queue"""
-        if len(self.queue) == self.limit_records:
-            self.queue.popleft()
-
-        self.queue.append(key)
-        self.cache.update({key:value})
-        return value
-
-
-    def get(self, key):
-        """ updates the LRU queue for values that hit. else LRU is not updated"""
-
-        value = self.cache.get(key)
-        if value:
-            if len(self.queue) == self.limit_records:
-                self.queue.popleft()
-            self.queue.append(key)
         return value
 
 
