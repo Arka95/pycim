@@ -1,6 +1,6 @@
 """
 This was created due to current limitations of python collections.deque suffering
-a node removal time complexity of O(1). moreover unnecessary functions are removed as well
+a node removal time complexity of O(N). moreover unnecessary functions are removed as well
 Note: this is not thread safe"""
 
 class Node:
@@ -20,17 +20,17 @@ class Deque:
             self.append_from_list(list)
 
     def front(self):
-        # earliest node.data is returned
+        # earliest node.data is returned in O(1)
         return self.__front.data if self.__front else None
 
     def back(self):
-        # latest node.data is returned
+        # latest node.data is returned in O(1)
         return self.__back.data if self.__back else None
 
-    def size(self):
+    def size(self):  # O(1)
         return self.__len
 
-    def append(self, data):
+    def append(self, data):  # O(1)
         node = Node(data)
 
         if self.__front == None and self.__back == None:
@@ -45,7 +45,7 @@ class Deque:
 
     def remove(self, node):
         """
-        node: pointer to the node you want to delete (*Node)
+        node: pointer to the node you want to delete (*Node) in O(1)
         """
         if not node:
             return
@@ -69,7 +69,7 @@ class Deque:
         self.__len = self.__len -1 if self.__len >0 else 0
         return self.__back
 
-    def pop(self):
+    def pop(self):  # O(1)
         if self.__back==None: # no node
             return None
 
@@ -86,12 +86,12 @@ class Deque:
         self.__len = self.__len -1 if self.__len >0 else 0
         return data
 
-    def move_to_back(self, node):
+    def move_to_back(self, node):  # O(1)
         data = node.data
         self.remove(node)
         return self.append(data)
 
-    def to_list(self):
+    def to_list(self):  # O(n)
         s = []
         ptr = self.__front
         while (ptr != None):
@@ -99,9 +99,9 @@ class Deque:
             ptr = ptr.next
         return s
 
-    def append_from_list(self, listing):
+    def append_from_list(self, listing):  # O(n)
         for c in listing:
             self.append(c)
 
-    def __str__(self):
+    def __str__(self):  # O(n)
         return str(self.to_list())
