@@ -65,6 +65,10 @@ class QueuedBehaviour(BaseBehaviour):
             return node.val
         return None
 
+    def update_limits(self, limits):
+        self.queue.__capacity = limits
+        super().update_limits(limits)
+
 class LRU(QueuedBehaviour):
 
     def update(self, key, value):
@@ -80,8 +84,7 @@ class LRU(QueuedBehaviour):
     def update_limits(self, limits):
         while self.queue.size() > limits:
             self.remove(self.queue.front())
-        self.queue.__capacity = limits
-        self.limit_records = limits
+        super().update_limits(limits)
 
 class MRU(QueuedBehaviour):
 
@@ -98,5 +101,4 @@ class MRU(QueuedBehaviour):
     def update_limits(self, limits):
         while self.queue.size() > limits:
             self.remove(self.queue.back())
-        self.queue.__capacity = limits
-        self.limit_records = limits
+        super().update_limits(limits)
