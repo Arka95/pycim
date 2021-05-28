@@ -31,6 +31,9 @@ class BaseBehaviour(object):
             return value
         return None
 
+    def update_limits(self, limits):
+        self.limit_records = limits
+
     def clear(self):
         self.cache.clear()
 
@@ -52,20 +55,8 @@ class QueuedBehaviour(BaseBehaviour):
         self.queue.remove_all()
         self.cache.clear()
 
-class LRU(QueuedBehaviour):
-
-    def update(self, key, value):
-        """ writes to cache and updates the LRU queue"""
-        if self.queue.size() == self.limit_records and self.cache.get(key) is None:
-            self.queue.pop_left()
-
-        self.remove(key)
-        index = self.queue.append(key)
-        self.cache.update({key: IndexedObject(value, index)})
-        return value
-
     def get(self, key):
-        """ updates the LRU queue for values that hit. else LRU is not updated"""
+        """ updates the queue for values that hit. else LRU is not updated"""
 
         node = self.cache.get(key)
         if node:
@@ -73,3 +64,39 @@ class LRU(QueuedBehaviour):
             self.cache[key].set_index(new_index)
             return node.val
         return None
+
+class LRU(QueuedBehaviour):
+
+    def update(self, key, value):
+        """ writes to cache and updates the LRU queue"""
+        if self.queue.size() == self.limit_records and self.cache.get(key) is None:
+            self.queue.pop()
+
+        self.remove(key)
+        index = self.queue.append(key)
+        self.cache.update({key: IndexedObject(value, index)})
+        return value
+
+    def update_limits(self, limits):
+        while self.queue.size() > limits:
+            self.remove(self.queue.front())
+        self.queue.__capacity = limits
+        self.limit_records = limits
+
+class MRU(QueuedBehaviour):
+
+    def update(self, key, value):
+        """ writes to cache and updates the MRU queue"""
+        if self.queue.size() == self.limit_records and self.cache.get(key) is None:
+            self.queue.pop()
+
+        self.remove(key)
+        index = self.queue.append(key)
+        self.cache.update({key: IndexedObject(value, index)})
+        return value
+
+    def update_limits(self, limits):
+        while self.queue.size() > limits:
+            self.remove(self.queue.back())
+        self.queue.__capacity = limits
+        self.limit_records = limits
