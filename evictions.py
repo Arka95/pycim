@@ -65,6 +65,12 @@ class QueuedBehaviour(BaseBehaviour):
             return node.val
         return None
 
+    def update(self, key, value):
+        self.remove(key)
+        index = self.queue.append(key)
+        self.cache.update({key: IndexedObject(value, index)})
+        return value
+
     def update_limits(self, limits):
         self.queue.__capacity = limits
         super().update_limits(limits)
@@ -74,12 +80,8 @@ class LRU(QueuedBehaviour):
     def update(self, key, value):
         """ writes to cache and updates the LRU queue"""
         if self.queue.size() == self.limit_records and self.cache.get(key) is None:
-            self.queue.pop()
-
-        self.remove(key)
-        index = self.queue.append(key)
-        self.cache.update({key: IndexedObject(value, index)})
-        return value
+            self.queue.pop_left()
+        return super().update(key, value)
 
     def update_limits(self, limits):
         while self.queue.size() > limits:
@@ -92,11 +94,7 @@ class MRU(QueuedBehaviour):
         """ writes to cache and updates the MRU queue"""
         if self.queue.size() == self.limit_records and self.cache.get(key) is None:
             self.queue.pop()
-
-        self.remove(key)
-        index = self.queue.append(key)
-        self.cache.update({key: IndexedObject(value, index)})
-        return value
+        return super().update(key, value)
 
     def update_limits(self, limits):
         while self.queue.size() > limits:
