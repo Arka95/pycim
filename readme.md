@@ -31,7 +31,7 @@ you can specify each of these in the constructor as well. (check definition)
 
 ####You can change the cache capaity using update_capacity(new_size). 
 
-If your cache size is currently > your new capacity, the excess, most irrelevant items based on the vcache behaviur, will be removed. However if the new capacity is big enough, items will be preserved
+If your cache size is currently > your new capacity, the excess, most irrelevant items based on the cache behavior, will be removed. However if the new capacity is big enough, items will be preserved
 
     c.update_capacity(10)
     c.cache_type.queue.to_list()
@@ -49,5 +49,5 @@ However, this will remove all items currently being held by your cache
     c.cache_type.queue.to_list()
     []
 ####Note:
-When you use queu based behaviors like MRU and LRU, the cache map holds items like
+When you use queue based behaviors like MRU and LRU, the cache map holds items like
 {key: IndexedObject} The *IndexedObject* is a wrapper around your actual *value*, that stores the queue index position of that key. Based on the position the eviction order is decided if the cache gets full
