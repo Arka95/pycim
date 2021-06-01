@@ -25,6 +25,8 @@ class Cim(metaclass=Singleton):
         self.cache_type = cache_type or LRU(capacity)
         self.fallback = fallback
 
+    def items(self):
+        return self.cache_type.items()
 
     def update_capacity(self, capacity):
         self.cache_type.update_limits(capacity)

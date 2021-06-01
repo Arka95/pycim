@@ -18,7 +18,10 @@ you can specify each of these in the constructor as well. (check definition)
     c.update(2,'a')
     c.update(3,'a')
     c.get(3)
-    'c'
+
+    # get all items or iterate through all items
+    c.items()
+    {1:'a', 2:'a', 3:'a'}
 
 ####If you want to view how the LRU/MRU queue is being managed:
 
@@ -45,9 +48,12 @@ If your cache size is currently > your new capacity, the excess, most irrelevant
     c.set_cache_type(MRU(5))
     c.cache_type
     <evictions.MRU at 0x7fa48f804d90>
+
 However, this will remove all items currently being held by your cache
+
     c.cache_type.queue.to_list()
     []
+
 ####Note:
 When you use queue based behaviors like MRU and LRU, the cache map holds items like
 {key: IndexedObject} The *IndexedObject* is a wrapper around your actual *value*, that stores the queue index position of that key. Based on the position the eviction order is decided if the cache gets full

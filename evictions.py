@@ -37,6 +37,8 @@ class BaseBehaviour(object):
     def clear(self):
         self.cache.clear()
 
+    def items(self):
+        return self.cache.items()
 
 class QueuedBehaviour(BaseBehaviour):
 
@@ -74,6 +76,13 @@ class QueuedBehaviour(BaseBehaviour):
     def update_limits(self, limits):
         self.queue.__capacity = limits
         super().update_limits(limits)
+
+    def items(self):
+        # limit usage only to iterators only where absolute necessary. O(n) time and space complexity
+        res = {}
+        for key,obj in super().items():
+            res.update({key: obj.val})
+        return res
 
 class LRU(QueuedBehaviour):
 
