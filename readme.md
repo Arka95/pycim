@@ -5,11 +5,11 @@ Cim (Cache in Memory Singleton) is what you would like to interpret as an in-mem
 you can specify each of these in the constructor as well. (check definition)
 - **default_val** : default return value if key not present. (default is None)
 - **capacity**: The capaity of the cache. Default is 5000 items(keys)
-- **cache_type:** how the cache behaves with updates (default is LRU. Cache behaviors are implemented in evictions.py. please google Beahvioral patterns in OOPS for more information)
-  Current options for cache type are MRU, LRU and CacheBehavior. BaseBehavior is the Base class which does not use any queued eviction policies and stops cache updation after limit is reached
+- **cache_type:** how the cache behaves with updates, when cache is full (default is LRU). Cache behaviors are implemented in *evictions.py*.(Please Google Behavioral patterns in OOPS for more information)
+  Current options for cache type are MRU, LRU and BaseBehavior. BaseBehavior is the Base class which does not use any queued eviction policies and stops cache updation after limit is reached
 - **fallback**: A fallback for the cache. Whenever there is a cache miss, the cache will try to lookup and update with this source.
-  Fallback is a singleton abstract class with get and update methods. For exampleyou can have a fallback to mongodb inheriting ths Fallback class and implement get and update for that mongodb.
-  By default, Fallback is None.
+  Fallback is a singleton abstract class with get and update methods. For example, you can have a fallback to mongodb inheriting this Fallback class and implement get and update for that mongodb.
+  By default, Fallback is None. Write policies can be attached to the fallback as well, in future releases.
   
 ##Usage:
 
