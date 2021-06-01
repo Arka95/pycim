@@ -12,12 +12,14 @@ you can specify each of these in the constructor as well. (check definition)
   By default, Fallback is None.
   
 ##Usage:
+
     c = Cim(capacity=5)
     c.update(1,'a')
     c.update(2,'a')
     c.update(3,'a')
     c.get(3)
     'c'
+
 ####If you want to view how the LRU/MRU queue is being managed:
 
     c.cache_type
