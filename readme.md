@@ -1,5 +1,7 @@
 Cim (Cache in Memory Singleton) is what you would like to interpret as an in-memory key, value store in python. its methods are similar to that of a map.
+
 ##Attributes:
+
 you can specify each of these in the constructor as well. (check definition)
 - **default_val** : default return value if key not present. (default is None)
 - **capacity**: The capaity of the cache. Default is 5000 items(keys)
@@ -17,6 +19,7 @@ you can specify each of these in the constructor as well. (check definition)
     c.get(3)
     'c'
 ####If you want to view how the LRU/MRU queue is being managed:
+
     c.cache_type
     <evictions.LRU at 0x7fa48f7c0580>
     
