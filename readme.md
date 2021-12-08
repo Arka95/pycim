@@ -1,3 +1,6 @@
+NOTE: This is mostly a toy project demonstrating extreme usage of DRY and OOPS design patterns. Works quite well for the part ! 
+This is not thread or process safe. Don't use in a web-server unless usage is local. Creates per-process singleton, not a global one !
+
 Cim (Cache in Memory Singleton) is what you would like to interpret as an in-memory key, value store in python. its methods are similar to that of a map.
 
 ##Attributes:
